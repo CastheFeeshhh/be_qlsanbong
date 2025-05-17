@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get CRUD</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .title  {
+        font-size: 25px;
+        width: 600;
+        padding-bottom: 10px;
+    }
+
+    .table-container    {
+        padding: 15px 20px;
+    }
+    
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    tr:hover {background-color: #00cc66;}
+</style>
+
+<body>
+    <div class="topnav">
+        <a class="active">Home</a>
+        <a href="/crud">Create User</a>
+    </div>
+    <div class="table-container">
+        <!-- </%= JSON.stringify(listUsers) %> -->
+        <div class="title">List Users</div>
+        <table>
+            <tr>
+              <th>Email</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>Gender</th>
+              <th>Action</th>
+            </tr>
+
+            <% for (let i=0; i<dataTable.length;i++) { %>
+
+                <tr>
+                    <td><%= dataTable[i].email %></td>
+                    <td><%= dataTable[i].first_name %></td>
+                    <td><%= dataTable[i].last_name %></td>
+                    <td><%= dataTable[i].address %></td>
+                    <td><%= dataTable[i].phone %></td>
+                    <td><%= dataTable[i].gender %></td>
+                    <td>
+                        <a href="/edit-crud?id=<%= dataTable[i].user_id %>" class="btn-edit" type="button">Edit</button>
+                        <a href="/delete-crud?id=<%= dataTable[i].user_id %>" class="btn-delete" type="button">Delete</button>
+                    </td>
+                </tr>
+            <% } %>  
+          </table>
+    </div>
+        
+
+</body>
+</html>

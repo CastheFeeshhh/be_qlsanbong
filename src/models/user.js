@@ -1,0 +1,53 @@
+"use strict";
+const { Model } = require("sequelize");
+
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    static associate(models) {}
+  }
+
+  User.init(
+    {
+      user_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      first_name: DataTypes.STRING,
+      last_name: DataTypes.STRING,
+      address: DataTypes.TEXT,
+      gender: {
+        type: DataTypes.ENUM("Male", "Female"),
+      },
+      phone: DataTypes.STRING,
+      avatar: DataTypes.STRING,
+      role_id: DataTypes.INTEGER,
+      position_id: DataTypes.INTEGER,
+      created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        field: "created_at",
+      },
+    },
+    {
+      sequelize,
+      modelName: "User",
+      tableName: "USER",
+      timestamps: false,
+    }
+  );
+
+  return User;
+};
