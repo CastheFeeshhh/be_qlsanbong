@@ -1,10 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class UserPosition extends Model {
-    static associate(models) {}
+    static associate(models) {
+      UserPosition.hasMany(models.User, { foreignKey: "position_id" });
+    }
   }
-
   UserPosition.init(
     {
       position_id: {

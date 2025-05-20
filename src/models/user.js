@@ -3,9 +3,13 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {}
+    static associate(models) {
+      User.belongsTo(models.Role, { foreignKey: "role_id" });
+      User.belongsTo(models.UserPosition, { foreignKey: "position_id" });
+      User.hasMany(models.FieldBooking, { foreignKey: "user_id" });
+      User.hasMany(models.News, { foreignKey: "author_id" });
+    }
   }
-
   User.init(
     {
       user_id: {
@@ -48,6 +52,5 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-
   return User;
 };

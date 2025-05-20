@@ -23,10 +23,16 @@ let handleUserLogin = (email, password) => {
       let isExist = await checkUserEmail(email);
       if (isExist) {
         let user = await db.User.findOne({
-          attributes: ["email", "password", "role_id", "position_id"],
+          attributes: [
+            "email",
+            "password",
+            "role_id",
+            "position_id",
+            "first_name",
+            "last_name",
+          ],
           where: { email: email },
           raw: true, // để convert data sang object để sau có thể xóa password
-          // exclude : [
         });
         if (user) {
           let check = await bcrypt.compareSync(password, user.password);

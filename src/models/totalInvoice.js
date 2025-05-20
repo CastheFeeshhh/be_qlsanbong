@@ -1,10 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class TotalInvoice extends Model {
-    static associate(models) {}
+    static associate(models) {
+      TotalInvoice.belongsTo(models.FieldBooking, { foreignKey: "booking_id" });
+    }
   }
-
   TotalInvoice.init(
     {
       invoice_id: {
@@ -13,9 +15,13 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       booking_id: DataTypes.INTEGER,
-      discount: DataTypes.DECIMAL,
-      total_price: DataTypes.DECIMAL,
-      payment_method: DataTypes.STRING,
+      discount: DataTypes.DECIMAL(5, 2),
+      total_price: DataTypes.DECIMAL(12, 2),
+      payment_method: DataTypes.ENUM(
+        "Trả sau bằng tiền mặt",
+        "Qua thẻ tín dụng",
+        "Qua chuyển khoản ngân hàng"
+      ),
       paid_at: DataTypes.DATE,
     },
     {

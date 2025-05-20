@@ -1,10 +1,15 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class AssetInvoiceDetail extends Model {
-    static associate(models) {}
+    static associate(models) {
+      AssetInvoiceDetail.belongsTo(models.AssetInvoice, {
+        foreignKey: "asset_invoice_id",
+      });
+      AssetInvoiceDetail.belongsTo(models.Asset, { foreignKey: "asset_id" });
+    }
   }
-
   AssetInvoiceDetail.init(
     {
       detail_id: {
@@ -15,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       asset_invoice_id: DataTypes.INTEGER,
       asset_id: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
-      price: DataTypes.DECIMAL,
+      price: DataTypes.DECIMAL(10, 2),
       note: DataTypes.TEXT,
     },
     {

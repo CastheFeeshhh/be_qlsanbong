@@ -1,10 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class FieldBookingDetail extends Model {
-    static associate(models) {}
+    static associate(models) {
+      FieldBookingDetail.belongsTo(models.FieldBooking, {
+        foreignKey: "booking_id",
+      });
+      FieldBookingDetail.belongsTo(models.Field, { foreignKey: "field_id" });
+      FieldBookingDetail.hasMany(models.ServiceBooking, {
+        foreignKey: "booking_detail_id",
+      });
+      FieldBookingDetail.hasMany(models.AssetUsage, {
+        foreignKey: "booking_detail_id",
+      });
+    }
   }
-
   FieldBookingDetail.init(
     {
       booking_detail_id: {
@@ -14,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       booking_id: DataTypes.INTEGER,
       field_id: DataTypes.INTEGER,
-      date: DataTypes.DATEONLY,
+      date: DataTypes.DATE,
       start_time: DataTypes.TIME,
       end_time: DataTypes.TIME,
     },

@@ -56,31 +56,9 @@ const {
   ServiceBooking,
   TotalInvoice,
   News,
+  AssetInventory,
+  AssetUsage,
 } = db;
-
-User.belongsTo(Role, { foreignKey: "role_id" });
-User.belongsTo(UserPosition, { foreignKey: "position_id" });
-
-FieldBooking.belongsTo(User, { foreignKey: "user_id" });
-FieldBooking.hasMany(FieldBookingDetail, { foreignKey: "booking_id" });
-FieldBooking.hasMany(ServiceBooking, { foreignKey: "booking_id" });
-FieldBooking.hasOne(TotalInvoice, { foreignKey: "booking_id" });
-
-FieldBookingDetail.belongsTo(FieldBooking, { foreignKey: "booking_id" });
-FieldBookingDetail.belongsTo(Field, { foreignKey: "field_id" });
-
-FieldSchedule.belongsTo(Field, { foreignKey: "field_id" });
-
-ServiceBooking.belongsTo(Service, { foreignKey: "service_id" });
-ServiceBooking.belongsTo(FieldBooking, { foreignKey: "booking_id" });
-
-TotalInvoice.belongsTo(FieldBooking, { foreignKey: "booking_id" });
-
-AssetInvoice.belongsTo(Supplier, { foreignKey: "supplier_id" });
-AssetInvoice.hasMany(AssetInvoiceDetail, { foreignKey: "asset_invoice_id" });
-
-AssetInvoiceDetail.belongsTo(AssetInvoice, { foreignKey: "asset_invoice_id" });
-AssetInvoiceDetail.belongsTo(Asset, { foreignKey: "asset_id" });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
