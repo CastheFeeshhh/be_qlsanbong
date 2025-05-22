@@ -178,7 +178,6 @@ let deleteUser = (userId) => {
 };
 
 let updateUserData = (data) => {
-  console.log(1234);
   return new Promise(async (resolve, reject) => {
     try {
       if (!data.user_id) {

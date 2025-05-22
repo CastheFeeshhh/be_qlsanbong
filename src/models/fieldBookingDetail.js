@@ -28,6 +28,15 @@ module.exports = (sequelize, DataTypes) => {
       date: DataTypes.DATE,
       start_time: DataTypes.TIME,
       end_time: DataTypes.TIME,
+      team_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      captain_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      booking_phone: DataTypes.STRING,
     },
     {
       sequelize,

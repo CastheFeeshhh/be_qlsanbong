@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       price: DataTypes.DECIMAL(10, 2),
       description: DataTypes.TEXT,
+      type: DataTypes.ENUM("Thuê", "Mua"),
     },
     {
       sequelize,
