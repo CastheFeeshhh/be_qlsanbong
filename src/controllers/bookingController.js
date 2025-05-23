@@ -22,8 +22,56 @@ let handleGetAllSchedules = async (req, res) => {
   });
 };
 
+let handleAddNewBooking = async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Thiếu thông tin user!",
+    });
+  }
+  let message = await bookingService.addNewBooking(req.body);
+  return res.status(200).json(message);
+};
+
+let handleAddDetailBooking = async (req, res) => {
+  if (!req.body.booking_id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Thiếu thông tin chi tiết hóa đơn!",
+    });
+  }
+  let message = await bookingService.addDetailBooking(req.body);
+  return res.status(200).json(message);
+};
+
+let handleAddNewServiceBooking = async (req, res) => {
+  if (!req.body.booking_detail_id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Thiếu thông tin chi tiết hóa đơn đặt sân!",
+    });
+  }
+  let message = await bookingService.addNewServiceBooking(req.body);
+  return res.status(200).json(message);
+};
+
+let handleAddServiceBookingDetail = async (req, res) => {
+  if (!req.body.service_booking_id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Thiếu thông tin chi tiết hóa đơn dịch vụ!",
+    });
+  }
+  let message = await bookingService.addServiceBookingDetail(req.body);
+  return res.status(200).json(message);
+};
+
 module.exports = {
   handleGetAllFields,
   handleGetAllServices,
   handleGetAllSchedules,
+  handleAddNewBooking,
+  handleAddDetailBooking,
+  handleAddNewServiceBooking,
+  handleAddServiceBookingDetail,
 };
