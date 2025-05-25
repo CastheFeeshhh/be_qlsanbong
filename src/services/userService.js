@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -24,6 +25,7 @@ let handleUserLogin = (email, password) => {
       if (isExist) {
         let user = await db.User.findOne({
           attributes: [
+            "user_id",
             "email",
             "password",
             "role_id",
@@ -32,15 +34,25 @@ let handleUserLogin = (email, password) => {
             "last_name",
           ],
           where: { email: email },
-          raw: true, // để convert data sang object để sau có thể xóa password
+          raw: true,
         });
         if (user) {
           let check = await bcrypt.compareSync(password, user.password);
           if (check) {
+            delete user.password;
+            const token = jwt.sign(
+              {
+                user_id: user.user_id,
+                role_id: user.role_id,
+                email: user.email,
+              },
+              process.env.JWT_SECRET,
+              { expiresIn: "1d" }
+            );
+
             userData.errCode = 0;
             userData.errMessage = "OK";
-            console.log(user);
-            delete user.password;
+            userData.token = token;
             userData.user = user;
           } else {
             userData.errCode = 3;

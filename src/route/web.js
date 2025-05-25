@@ -2,6 +2,11 @@ import express from "express";
 import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import bookingController from "../controllers/bookingController";
+import {
+  authenticateToken,
+  authorizeRoles,
+} from "../middleware/authMiddleware.js";
+const verifyToken = require("../middleware/verifyToken");
 
 let router = express.Router();
 
@@ -17,10 +22,23 @@ let initWebRoutes = (app) => {
   router.get("/delete-crud", homeController.deleteCRUD);
 
   router.post("/api/login", userController.handleLogin);
-  router.get("/api/get-all-users", userController.handleGetAllUsers);
-  router.post("/api/create-new-user", userController.handleCreateNewUser);
-  router.put("/api/edit-user", userController.handleEditUser);
-  router.delete("/api/delete-user", userController.handleDeleteUser);
+  router.get(
+    "/api/get-all-users",
+    verifyToken,
+    userController.handleGetAllUsers
+  );
+
+  router.post(
+    "/api/create-new-user",
+    verifyToken,
+    userController.handleCreateNewUser
+  );
+  router.put("/api/edit-user", verifyToken, userController.handleEditUser);
+  router.delete(
+    "/api/delete-user",
+    verifyToken,
+    userController.handleDeleteUser
+  );
 
   router.get("/api/get-all-fields", bookingController.handleGetAllFields);
   router.get("/api/get-all-services", bookingController.handleGetAllServices);
@@ -38,6 +56,19 @@ let initWebRoutes = (app) => {
   router.post(
     "/api/add-service-booking-detail",
     bookingController.handleAddServiceBookingDetail
+  );
+
+  router.get("/api/protected", authenticateToken, (req, res) => {
+    res.json({ message: "You are authenticated!", user: req.user });
+  });
+
+  router.get(
+    "/api/admin-only",
+    authenticateToken,
+    authorizeRoles(1), // ví dụ: role_id = 1 là admin
+    (req, res) => {
+      res.json({ message: "Welcome admin!" });
+    }
   );
 
   return app.use("/", router);
