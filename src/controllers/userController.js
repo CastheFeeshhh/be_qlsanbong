@@ -39,6 +39,25 @@ let handleGetAllUsers = async (req, res) => {
   });
 };
 
+let handleGetAllCustomers = async (req, res) => {
+  let id = req.query.id || req.body.id;
+  if (!id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Missing required parameters",
+      users: [],
+    });
+  }
+
+  let users = await userService.getAllCustomers(id);
+
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "OK",
+    users,
+  });
+};
+
 let handleCreateNewUser = async (req, res) => {
   let message = await userService.createNewUser(req.body);
   return res.status(200).json(message);
@@ -64,6 +83,7 @@ let handleEditUser = async (req, res) => {
 module.exports = {
   handleLogin,
   handleGetAllUsers,
+  handleGetAllCustomers,
   handleCreateNewUser,
   handleEditUser,
   handleDeleteUser,

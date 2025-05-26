@@ -116,6 +116,33 @@ let getAllUsers = (userId) => {
   });
 };
 
+let getAllCustomers = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+      if (userId === "ALL") {
+        users = await db.User.findAll({
+          where: { role_id: 3 },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      if (userId && userId !== "ALL") {
+        users = await db.User.findOne({
+          where: { user_id: userId, role_id: 3 },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 let createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -227,6 +254,7 @@ let updateUserData = (data) => {
 module.exports = {
   handleUserLogin,
   getAllUsers,
+  getAllCustomers,
   createNewUser,
   deleteUser,
   updateUserData,

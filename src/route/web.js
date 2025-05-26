@@ -22,10 +22,19 @@ let initWebRoutes = (app) => {
   router.get("/delete-crud", homeController.deleteCRUD);
 
   router.post("/api/login", userController.handleLogin);
+
   router.get(
     "/api/get-all-users",
     verifyToken,
+    authorizeRoles(1),
     userController.handleGetAllUsers
+  );
+
+  router.get(
+    "/api/get-all-customers",
+    verifyToken,
+    authorizeRoles(1, 2),
+    userController.handleGetAllCustomers
   );
 
   router.post(
@@ -65,7 +74,7 @@ let initWebRoutes = (app) => {
   router.get(
     "/api/admin-only",
     authenticateToken,
-    authorizeRoles(1), // ví dụ: role_id = 1 là admin
+    authorizeRoles(1),
     (req, res) => {
       res.json({ message: "Welcome admin!" });
     }
