@@ -7,7 +7,7 @@ let handleLogin = async (req, res) => {
   if (!email || !password) {
     return res.status(500).json({
       errCode: 1,
-      message: "Missing inputs parameter!",
+      message: "Vui lòng nhập đầy đủ thông tin!",
     });
   }
 
@@ -18,6 +18,11 @@ let handleLogin = async (req, res) => {
     token: userData.token,
     user: userData.user ? userData.user : {},
   });
+};
+
+let handleRegister = async (req, res) => {
+  let message = await userService.registerUser(req.body);
+  return res.status(200).json(message);
 };
 
 let handleGetAllUsers = async (req, res) => {
@@ -87,4 +92,5 @@ module.exports = {
   handleCreateNewUser,
   handleEditUser,
   handleDeleteUser,
+  handleRegister,
 };

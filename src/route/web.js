@@ -12,7 +12,6 @@ let router = express.Router();
 
 let initWebRoutes = (app) => {
   router.get("/", homeController.getHomePage);
-  router.get("/about", homeController.getAboutPage);
 
   router.get("/crud", homeController.getCRUD);
   router.post("/post-crud", homeController.postCRUD);
@@ -22,6 +21,7 @@ let initWebRoutes = (app) => {
   router.get("/delete-crud", homeController.deleteCRUD);
 
   router.post("/api/login", userController.handleLogin);
+  router.post("/api/register", userController.handleRegister);
 
   router.get(
     "/api/get-all-users",
@@ -61,7 +61,6 @@ let initWebRoutes = (app) => {
     "/api/add-new-service-booking",
     bookingController.handleAddNewServiceBooking
   );
-
   router.post(
     "/api/add-service-booking-detail",
     bookingController.handleAddServiceBookingDetail

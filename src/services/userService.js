@@ -56,17 +56,63 @@ let handleUserLogin = (email, password) => {
             userData.user = user;
           } else {
             userData.errCode = 3;
-            userData.errMessage = "Wrong password!";
+            userData.errMessage = "Mật khẩu không chính xác!";
           }
         } else {
           userData.errCode = 2;
-          userData.errMessage = `User not found!`;
+          userData.errMessage = `Người dùng không tồn tại!`;
         }
       } else {
         userData.errCode = 1;
-        userData.errMessage = `Your email isn't exist. Pls try again!`;
+        userData.errMessage = `Email của bạn không tồn tại!`;
       }
       resolve(userData);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let registerUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let check = await checkUserEmail(data.email);
+      if (check === true) {
+        resolve({
+          errCode: 1,
+          errMessage: "Email đã tồn tại. Vui lòng chọn email khác!!",
+        });
+      } else if (
+        data.email === null ||
+        data.password === null ||
+        data.first_name === null ||
+        data.last_name === null ||
+        data.address === null ||
+        data.gender === null ||
+        data.phone === null
+      ) {
+        resolve({
+          errCode: 1,
+          errMessage: "Vui lòng nhập đầy đủ thông tin!",
+        });
+      } else {
+        let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+        await db.User.create({
+          email: data.email,
+          password: hashPasswordFromBcrypt,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          address: data.address,
+          gender: data.gender,
+          phone: data.phone,
+          role_id: 3,
+          position_id: 1,
+        });
+        resolve({
+          errCode: 0,
+          message: "OK",
+        });
+      }
     } catch (e) {
       reject(e);
     }
@@ -150,7 +196,7 @@ let createNewUser = (data) => {
       if (check === true) {
         resolve({
           errCode: 1,
-          errMessage: "Your email is already in used. Pls try another email!!",
+          errMessage: "Email đã tồn tại. Vui lòng chọn email khác!!",
         });
       } else if (
         data.email === null ||
@@ -159,11 +205,11 @@ let createNewUser = (data) => {
         data.last_name === null ||
         data.address === null ||
         data.gender === null ||
-        data.gender === null
+        data.phone === null
       ) {
         resolve({
           errCode: 1,
-          errMessage: "Missing required parameters!",
+          errMessage: "Vui lòng nhập đầy đủ thông tin!",
         });
       } else {
         let hashPasswordFromBcrypt = await hashUserPassword(data.password);
@@ -253,6 +299,7 @@ let updateUserData = (data) => {
 
 module.exports = {
   handleUserLogin,
+  registerUser,
   getAllUsers,
   getAllCustomers,
   createNewUser,
