@@ -22,6 +22,9 @@ let initWebRoutes = (app) => {
 
   router.post("/api/login", userController.handleLogin);
   router.post("/api/register", userController.handleRegister);
+  router.post("/api/forgot-password", userController.handleForgotPassword);
+  router.get("/api/reset-password", userController.handleVerifyResetToken);
+  router.post("/api/reset-password", userController.handleResetPassword);
 
   router.get(
     "/api/get-all-users",

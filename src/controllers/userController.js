@@ -25,6 +25,69 @@ let handleRegister = async (req, res) => {
   return res.status(200).json(message);
 };
 
+let handleForgotPassword = async (req, res) => {
+  let email = req.body.email;
+
+  if (!email) {
+    return res.status(400).json({
+      errCode: 1,
+      message: "Missing required parameter: email",
+    });
+  }
+
+  let message = await userService.sendForgotPasswordEmail(email);
+  return res.status(200).json(message);
+};
+
+let handleVerifyResetToken = async (req, res) => {
+  try {
+    let token = req.query.token;
+    let email = req.query.email;
+
+    if (!token || !email) {
+      return res.status(400).json({
+        errCode: 1,
+        message: "Missing token or email parameter",
+      });
+    }
+
+    let response = await userService.verifyResetToken(token, email);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Error in handleVerifyResetToken controller:", e);
+    return res.status(500).json({
+      errCode: -1,
+      message: "Internal server error",
+    });
+  }
+};
+
+let handleResetPassword = async (req, res) => {
+  try {
+    let { email, token, newPassword } = req.body;
+
+    if (!email || !token || !newPassword) {
+      return res.status(400).json({
+        errCode: 1,
+        message: "Missing email, token, or newPassword",
+      });
+    }
+
+    let response = await userService.resetUserPassword(
+      email,
+      token,
+      newPassword
+    );
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Error in handleResetPassword controller:", e);
+    return res.status(500).json({
+      errCode: -1,
+      message: "Internal server error",
+    });
+  }
+};
+
 let handleGetAllUsers = async (req, res) => {
   let id = req.query.id || req.body.id;
   if (!id) {
@@ -87,10 +150,13 @@ let handleEditUser = async (req, res) => {
 
 module.exports = {
   handleLogin,
+  handleRegister,
+  handleForgotPassword,
+  handleVerifyResetToken,
+  handleResetPassword,
   handleGetAllUsers,
   handleGetAllCustomers,
   handleCreateNewUser,
   handleEditUser,
   handleDeleteUser,
-  handleRegister,
 };
