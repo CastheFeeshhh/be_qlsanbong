@@ -1,4 +1,5 @@
 import userService from "../services/userService";
+import { generateAccessToken } from "../utils/jwtUtils";
 
 let handleLogin = async (req, res) => {
   let email = req.body.email;
@@ -88,6 +89,30 @@ let handleResetPassword = async (req, res) => {
   }
 };
 
+let handleGoogleCallback = (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.redirect("http://localhost:3000/login?error=auth_failed");
+    }
+
+    const accessToken = generateAccessToken(user);
+
+    res.cookie("jwt", accessToken, {
+      httpOnly: true,
+      maxAge: 3600000,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.redirect("http://localhost:3000/home");
+  } catch (error) {
+    console.error("Error in handleGoogleCallback:", error);
+    return res.redirect(
+      "http://localhost:3000/login?error=internal_server_error"
+    );
+  }
+};
+
 let handleGetAllUsers = async (req, res) => {
   let id = req.query.id || req.body.id;
   if (!id) {
@@ -154,6 +179,7 @@ module.exports = {
   handleForgotPassword,
   handleVerifyResetToken,
   handleResetPassword,
+  handleGoogleCallback,
   handleGetAllUsers,
   handleGetAllCustomers,
   handleCreateNewUser,

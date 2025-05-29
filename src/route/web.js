@@ -6,7 +6,9 @@ import {
   authenticateToken,
   authorizeRoles,
 } from "../middleware/authMiddleware.js";
+import passport from "passport";
 const verifyToken = require("../middleware/verifyToken");
+import jwt from "jsonwebtoken";
 
 let router = express.Router();
 
@@ -25,6 +27,58 @@ let initWebRoutes = (app) => {
   router.post("/api/forgot-password", userController.handleForgotPassword);
   router.get("/api/reset-password", userController.handleVerifyResetToken);
   router.post("/api/reset-password", userController.handleResetPassword);
+
+  router.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+
+  router.get(
+    "/auth/google/callback",
+    passport.authenticate("google", {
+      session: true,
+      failureRedirect: `${process.env.FRONTEND_URL}/login?status=error&message=Đăng nhập Google thất bại.`,
+    }),
+    (req, res) => {
+      const token = jwt.sign(
+        {
+          user_id: req.user.user_id,
+          email: req.user.email,
+          role_id: req.user.role_id,
+          first_name: req.user.first_name,
+          last_name: req.user.last_name,
+          avatar: req.user.avatar,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?token=${token}&user_id=${
+          req.user.user_id
+        }&role_id=${req.user.role_id}&first_name=${encodeURIComponent(
+          req.user.first_name || ""
+        )}&last_name=${encodeURIComponent(
+          req.user.last_name || ""
+        )}&avatar=${encodeURIComponent(req.user.avatar || "")}`
+      );
+    }
+  );
+
+  router.get("/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return console.error(err);
+      }
+      res.clearCookie("jwt");
+      req.session.destroy((err) => {
+        if (err) {
+          return console.error(err);
+        }
+        res.redirect("http://localhost:3000/login");
+      });
+    });
+  });
 
   router.get(
     "/api/get-all-users",
@@ -69,18 +123,13 @@ let initWebRoutes = (app) => {
     bookingController.handleAddServiceBookingDetail
   );
 
-  router.get("/api/protected", authenticateToken, (req, res) => {
+  router.get("/api/profile", verifyToken, (req, res) => {
     res.json({ message: "You are authenticated!", user: req.user });
   });
 
-  router.get(
-    "/api/admin-only",
-    authenticateToken,
-    authorizeRoles(1),
-    (req, res) => {
-      res.json({ message: "Welcome admin!" });
-    }
-  );
+  router.get("/api/admin-only", verifyToken, authorizeRoles(1), (req, res) => {
+    res.json({ message: "Welcome admin!" });
+  });
 
   return app.use("/", router);
 };

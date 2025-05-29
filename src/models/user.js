@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       last_name: DataTypes.STRING,
       address: DataTypes.TEXT,
       gender: {
-        type: DataTypes.ENUM("Male", "Female"),
+        type: DataTypes.ENUM("Nam", "Nữ"),
       },
       phone: DataTypes.STRING,
       avatar: DataTypes.STRING,
@@ -51,6 +51,11 @@ module.exports = (sequelize, DataTypes) => {
       resetPasswordExpires: {
         type: DataTypes.DATE,
         allowNull: true,
+      },
+      googleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
       },
     },
     {
