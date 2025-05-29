@@ -52,7 +52,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      googleId: {
+      google_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      facebook_id: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: true,

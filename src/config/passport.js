@@ -54,7 +54,7 @@ let configPassport = (app) => {
                   profile.photos && profile.photos.length > 0
                     ? profile.photos[0].value
                     : user.avatar,
-                googleId: profile.id,
+                google_id: profile.id,
               },
               { where: { email: email } }
             );
@@ -76,9 +76,9 @@ let configPassport = (app) => {
                   ? profile.photos[0].value
                   : null,
               role_id: 3,
-              googleId: profile.id,
+              google_id: profile.id,
               address: "",
-              gender: "Nam", // <-- ĐÃ SỬA THÀNH 'Nam' hoặc 'Nữ'
+              gender: "Nam",
               phone: "",
               position_id: 1,
             });
