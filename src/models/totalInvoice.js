@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         "Qua chuyển khoản ngân hàng"
       ),
       paid_at: DataTypes.DATE,
+      vnp_txn_ref: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize,

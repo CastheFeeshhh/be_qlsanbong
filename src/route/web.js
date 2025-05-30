@@ -9,6 +9,7 @@ import {
 import passport from "passport";
 const verifyToken = require("../middleware/verifyToken");
 import jwt from "jsonwebtoken";
+const vnpayController = require("../controllers/vnpayController");
 
 let router = express.Router();
 
@@ -178,13 +179,22 @@ let initWebRoutes = (app) => {
     bookingController.handleAddServiceBookingDetail
   );
 
-  router.get("/api/profile", verifyToken, (req, res) => {
-    res.json({ message: "You are authenticated!", user: req.user });
-  });
+  router.post(
+    "/api/vnpay/create_payment_url",
+    vnpayController.createVnpayPayment
+  );
 
-  router.get("/api/admin-only", verifyToken, authorizeRoles(1), (req, res) => {
-    res.json({ message: "Welcome admin!" });
-  });
+  router.get("/api/vnpay/ipn", vnpayController.handleVnpayIPN);
+
+  router.get("/api/vnpay/return", vnpayController.handleVnpayReturn);
+
+  // router.get("/api/profile", verifyToken, (req, res) => {
+  //   res.json({ message: "You are authenticated!", user: req.user });
+  // });
+
+  // router.get("/api/admin-only", verifyToken, authorizeRoles(1), (req, res) => {
+  //   res.json({ message: "Welcome admin!" });
+  // });
 
   return app.use("/", router);
 };
