@@ -19,12 +19,12 @@ app.use(cookieParser());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, // Sử dụng SESSION_SECRET từ .env
-    resave: false, // Không lưu lại session nếu không có thay đổi
-    saveUninitialized: true, // Lưu session mới nhưng chưa được khởi tạo
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // true nếu dùng HTTPS trong production
-      maxAge: 24 * 60 * 60 * 1000, // 24 giờ
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );

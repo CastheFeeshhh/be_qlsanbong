@@ -65,6 +65,47 @@ let initWebRoutes = (app) => {
     }
   );
 
+  router.get(
+    "/auth/facebook",
+    passport.authenticate("facebook", { scope: ["email", "public_profile"] })
+  );
+
+  router.get(
+    "/auth/facebook/callback",
+    passport.authenticate("facebook", {
+      session: true,
+      failureRedirect: `${
+        process.env.FRONTEND_URL
+      }/login?status=error&message=${encodeURIComponent(
+        "Đăng nhập Facebook thất bại!"
+      )}`,
+    }),
+    (req, res) => {
+      const user = req.user;
+      const token = jwt.sign(
+        {
+          user_id: user.user_id,
+          email: user.email,
+          role_id: user.role_id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          avatar: user.avatar,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?token=${token}` +
+          `&user_id=${user.user_id}` +
+          `&role_id=${user.role_id}` +
+          `&first_name=${encodeURIComponent(user.first_name || "")}` +
+          `&last_name=${encodeURIComponent(user.last_name || "")}` +
+          `&avatar=${encodeURIComponent(user.avatar || "")}`
+      );
+    }
+  );
+
   router.get("/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
@@ -85,6 +126,20 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1),
     userController.handleGetAllUsers
+  );
+
+  router.get(
+    "/api/get-all-admins",
+    verifyToken,
+    authorizeRoles(1),
+    userController.handleGetAllAdmins
+  );
+
+  router.get(
+    "/api/get-all-staffs",
+    verifyToken,
+    authorizeRoles(1),
+    userController.handleGetAllStaffs
   );
 
   router.get(

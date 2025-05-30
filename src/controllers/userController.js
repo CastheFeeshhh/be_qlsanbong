@@ -132,17 +132,27 @@ let handleGetAllUsers = async (req, res) => {
   });
 };
 
-let handleGetAllCustomers = async (req, res) => {
-  let id = req.query.id || req.body.id;
-  if (!id) {
-    return res.status(200).json({
-      errCode: 1,
-      errMessage: "Missing required parameters",
-      users: [],
-    });
-  }
+let handleGetAllAdmins = async (req, res) => {
+  let users = await userService.getAllAdmins();
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "OK",
+    users,
+  });
+};
 
-  let users = await userService.getAllCustomers(id);
+let handleGetAllStaffs = async (req, res) => {
+  let users = await userService.getAllStaffs();
+
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "OK",
+    users,
+  });
+};
+
+let handleGetAllCustomers = async (req, res) => {
+  let users = await userService.getAllCustomers();
 
   return res.status(200).json({
     errCode: 0,
@@ -181,6 +191,8 @@ module.exports = {
   handleResetPassword,
   handleGoogleCallback,
   handleGetAllUsers,
+  handleGetAllAdmins,
+  handleGetAllStaffs,
   handleGetAllCustomers,
   handleCreateNewUser,
   handleEditUser,

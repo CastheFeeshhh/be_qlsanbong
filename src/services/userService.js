@@ -34,6 +34,7 @@ let handleUserLogin = (email, password) => {
             "position_id",
             "first_name",
             "last_name",
+            "avatar",
           ],
           where: { email: email },
           raw: true,
@@ -369,26 +370,50 @@ let getAllUsers = (userId) => {
   });
 };
 
-let getAllCustomers = (userId) => {
+let getAllAdmins = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let users = "";
-      if (userId === "ALL") {
-        users = await db.User.findAll({
-          where: { role_id: 3 },
-          attributes: {
-            exclude: ["password"],
-          },
-        });
-      }
-      if (userId && userId !== "ALL") {
-        users = await db.User.findOne({
-          where: { user_id: userId, role_id: 3 },
-          attributes: {
-            exclude: ["password"],
-          },
-        });
-      }
+      users = await db.User.findAll({
+        where: { role_id: 1 },
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let getAllStaffs = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+      users = await db.User.findAll({
+        where: { role_id: 2 },
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let getAllCustomers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+      users = await db.User.findAll({
+        where: { role_id: 3 },
+        attributes: {
+          exclude: ["password"],
+        },
+      });
       resolve(users);
     } catch (e) {
       reject(e);
@@ -411,7 +436,6 @@ let createNewUser = (data) => {
         data.first_name === null ||
         data.last_name === null ||
         data.address === null ||
-        data.gender === null ||
         data.phone === null
       ) {
         resolve({
@@ -511,6 +535,8 @@ module.exports = {
   verifyResetToken,
   resetUserPassword,
   getAllUsers,
+  getAllAdmins,
+  getAllStaffs,
   getAllCustomers,
   createNewUser,
   deleteUser,
