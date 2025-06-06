@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       payment_method: DataTypes.ENUM(
         "Trả sau bằng tiền mặt",
         "Qua thẻ tín dụng",
-        "Qua chuyển khoản ngân hàng"
+        "Qua chuyển khoản ngân hàng",
+        "VNPAY"
       ),
       paid_at: DataTypes.DATE,
       vnp_txn_ref: {

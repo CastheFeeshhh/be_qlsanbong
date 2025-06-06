@@ -161,6 +161,16 @@ let handleGetAllCustomers = async (req, res) => {
   });
 };
 
+let handleGetAllSuppliers = async (req, res) => {
+  let suppliers = await userService.getAllSuppliers();
+
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "OK",
+    suppliers,
+  });
+};
+
 let handleCreateNewUser = async (req, res) => {
   let message = await userService.createNewUser(req.body);
   return res.status(200).json(message);
@@ -194,6 +204,7 @@ module.exports = {
   handleGetAllAdmins,
   handleGetAllStaffs,
   handleGetAllCustomers,
+  handleGetAllSuppliers,
   handleCreateNewUser,
   handleEditUser,
   handleDeleteUser,

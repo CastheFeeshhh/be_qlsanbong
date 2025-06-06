@@ -421,6 +421,18 @@ let getAllCustomers = () => {
   });
 };
 
+let getAllSuppliers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+      users = await db.Supplier.findAll();
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 let createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -538,6 +550,7 @@ module.exports = {
   getAllAdmins,
   getAllStaffs,
   getAllCustomers,
+  getAllSuppliers,
   createNewUser,
   deleteUser,
   updateUserData,

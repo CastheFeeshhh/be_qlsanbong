@@ -150,6 +150,13 @@ let initWebRoutes = (app) => {
     userController.handleGetAllCustomers
   );
 
+  router.get(
+    "/api/get-all-suppliers",
+    verifyToken,
+    authorizeRoles(1, 2),
+    userController.handleGetAllSuppliers
+  );
+
   router.post(
     "/api/create-new-user",
     verifyToken,
@@ -165,6 +172,7 @@ let initWebRoutes = (app) => {
   router.get("/api/get-all-fields", bookingController.handleGetAllFields);
   router.get("/api/get-all-services", bookingController.handleGetAllServices);
   router.get("/api/get-all-schedules", bookingController.handleGetAllSchedules);
+
   router.post("/api/add-new-booking", bookingController.handleAddNewBooking);
   router.post(
     "/api/add-detail-booking",
@@ -184,7 +192,11 @@ let initWebRoutes = (app) => {
     vnpayController.createVnpayPayment
   );
 
-  router.get("/api/vnpay/ipn", vnpayController.handleVnpayIPN);
+  router.get("/api/vnpay/ipn", (req, res, next) => {
+    console.log(">>> ĐÃ NHẬN REQUEST TỚI /api/vnpay/ipn");
+    console.log(">>> Query params:", req.query);
+    vnpayController.handleVnpayIPN(req, res, next);
+  });
 
   router.get("/api/vnpay/return", vnpayController.handleVnpayReturn);
 
