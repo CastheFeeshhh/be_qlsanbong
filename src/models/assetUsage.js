@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
   class AssetUsage extends Model {
     static associate(models) {
       AssetUsage.belongsTo(models.Asset, { foreignKey: "asset_id" });
-      AssetUsage.belongsTo(models.FieldBookingDetail, {
-        foreignKey: "booking_detail_id",
+      AssetUsage.belongsTo(models.ServiceBookingDetail, {
+        foreignKey: "service_booking_id",
       });
     }
   }
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      booking_detail_id: DataTypes.INTEGER,
+      service_booking_id: DataTypes.INTEGER,
       quantity_used: {
         type: DataTypes.INTEGER,
         allowNull: false,

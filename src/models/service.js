@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       Service.hasMany(models.ServiceBookingDetail, {
         foreignKey: "service_id",
       });
+      Service.belongsTo(models.Asset, {
+        foreignKey: "asset_id",
+        as: "asset",
+      });
     }
   }
   Service.init(
@@ -20,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.DECIMAL(10, 2),
       description: DataTypes.TEXT,
       type: DataTypes.ENUM("Thuê", "Mua"),
+      asset_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,

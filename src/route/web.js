@@ -2,6 +2,7 @@ import express from "express";
 import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import bookingController from "../controllers/bookingController";
+import assetController from "../controllers/assetController";
 import {
   authenticateToken,
   authorizeRoles,
@@ -155,6 +156,13 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1, 2),
     userController.handleGetAllSuppliers
+  );
+
+  router.get(
+    "/api/get-all-assets",
+    // verifyToken,
+    // authorizeRoles(1, 2),
+    assetController.handleGetAllAssets
   );
 
   router.post(
