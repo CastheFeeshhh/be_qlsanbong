@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       ServiceBookingDetail.belongsTo(models.Service, {
         foreignKey: "service_id",
       });
+      ServiceBookingDetail.hasOne(models.AssetUsage, {
+        foreignKey: "service_booking_detail_id",
+      });
     }
   }
   ServiceBookingDetail.init(

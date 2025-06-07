@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       AssetUsage.belongsTo(models.Asset, { foreignKey: "asset_id" });
       AssetUsage.belongsTo(models.ServiceBookingDetail, {
-        foreignKey: "service_booking_id",
+        foreignKey: "service_booking_detail_id",
       });
     }
   }
@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      service_booking_id: DataTypes.INTEGER,
+      service_booking_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       quantity_used: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -29,10 +32,9 @@ module.exports = (sequelize, DataTypes) => {
       used_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-        field: "used_at",
       },
       returned_at: DataTypes.DATE,
-      status: DataTypes.ENUM("Đang sử dụng", "Đã trả", "Hư hỏng"),
+      status: DataTypes.ENUM("Đang sử dụng", "Đã trả", "Hư hỏng", "Đã bán"),
     },
     {
       sequelize,

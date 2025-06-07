@@ -52,25 +52,20 @@ const vnpayService = {
 
     vnp_Params = sortObject(vnp_Params);
 
-    // Tạo chuỗi dữ liệu để hash: các tham số được mã hóa và nối bằng '&'
-    // Không bao gồm secretKey trong chuỗi này
     let signData = Object.keys(vnp_Params)
       .map((key) => {
         let value = vnp_Params[key];
-        // Mã hóa giá trị theo chuẩn URI và thay thế khoảng trắng bằng '+'
         return `${key}=${encodeURIComponent(value).replace(/%20/g, "+")}`;
       })
       .join("&");
 
-    let hmac = crypto.createHmac("sha512", secretKey); // SecretKey dùng làm key cho HMAC
+    let hmac = crypto.createHmac("sha512", secretKey);
     let vnp_SecureHash = hmac
       .update(Buffer.from(signData, "utf-8"))
       .digest("hex");
 
     vnp_Params["vnp_SecureHash"] = vnp_SecureHash;
 
-    // Tạo URL cuối cùng để chuyển hướng người dùng
-    // Đảm bảo tất cả tham số trong URL đều được encodeURIComponent
     let finalVnpUrl = vnpUrl + "?" + qs.stringify(vnp_Params, { encode: true });
 
     return finalVnpUrl;
@@ -86,7 +81,6 @@ const vnpayService = {
     vnp_Params = sortObject(vnp_Params);
     let secretKey = vnpayConfig.hashSecret;
 
-    // Cách tạo signData để verify phải khớp với cách tạo khi gửi
     let signData = Object.keys(vnp_Params)
       .map((key) => {
         let value = vnp_Params[key];
