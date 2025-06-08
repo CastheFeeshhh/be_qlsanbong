@@ -546,6 +546,50 @@ let updateUserData = (data) => {
   });
 };
 
+const handleChangePassword = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.userId || !data.oldPassword || !data.newPassword) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu các tham số bắt buộc!",
+        });
+        return;
+      }
+
+      let user = await db.User.findOne({
+        where: { user_id: data.userId },
+        raw: false,
+      });
+
+      if (!user) {
+        resolve({
+          errCode: 2,
+          errMessage: "Không tìm thấy người dùng.",
+        });
+        return;
+      }
+
+      let check = await bcrypt.compareSync(data.oldPassword, user.password);
+      if (check) {
+        user.password = await hashUserPassword(data.newPassword);
+        await user.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Đổi mật khẩu thành công!",
+        });
+      } else {
+        resolve({
+          errCode: 3,
+          errMessage: "Mật khẩu cũ không chính xác.",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   handleUserLogin,
   registerUser,
@@ -560,4 +604,5 @@ module.exports = {
   createNewUser,
   deleteUser,
   updateUserData,
+  handleChangePassword,
 };

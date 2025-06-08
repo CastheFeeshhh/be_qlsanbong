@@ -40,6 +40,34 @@ let handleForgotPassword = async (req, res) => {
   return res.status(200).json(message);
 };
 
+let handleChangePassword = async (req, res) => {
+  try {
+    const userIdFromToken = req.user.user_id;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Vui lòng nhập đầy đủ mật khẩu cũ và mới.",
+      });
+    }
+
+    let response = await userService.handleChangePassword({
+      userId: userIdFromToken,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    });
+
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Lỗi khi đổi mật khẩu:", e);
+    return res.status(500).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server",
+    });
+  }
+};
+
 let handleVerifyResetToken = async (req, res) => {
   try {
     let token = req.query.token;
@@ -197,6 +225,7 @@ module.exports = {
   handleLogin,
   handleRegister,
   handleForgotPassword,
+  handleChangePassword,
   handleVerifyResetToken,
   handleResetPassword,
   handleGoogleCallback,

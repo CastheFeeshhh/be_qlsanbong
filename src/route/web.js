@@ -168,15 +168,15 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-all-invoices",
-    // verifyToken,
-    // authorizeRoles(1, 2),
+    verifyToken,
+    authorizeRoles(1, 2),
     invoiceController.handleGetAllInvoices
   );
 
   router.get(
     "/api/get-all-asset-invoices",
-    // verifyToken,
-    // authorizeRoles(1, 2),
+    verifyToken,
+    authorizeRoles(1, 2),
     invoiceController.handleGetAllAssetInvoices
   );
 
@@ -194,8 +194,14 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-booking-history",
-    // verifyToken,
+    verifyToken,
     bookingController.handleGetBookingHistory
+  );
+
+  router.post(
+    "/api/change-password",
+    verifyToken,
+    userController.handleChangePassword
   );
 
   router.get("/api/get-all-fields", bookingController.handleGetAllFields);
