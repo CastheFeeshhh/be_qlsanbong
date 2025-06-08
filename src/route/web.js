@@ -3,6 +3,7 @@ import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import bookingController from "../controllers/bookingController";
 import assetController from "../controllers/assetController";
+import invoiceController from "../controllers/invoiceController";
 import {
   authenticateToken,
   authorizeRoles,
@@ -160,9 +161,23 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-all-assets",
+    verifyToken,
+    authorizeRoles(1, 2),
+    assetController.handleGetAllAssets
+  );
+
+  router.get(
+    "/api/get-all-invoices",
     // verifyToken,
     // authorizeRoles(1, 2),
-    assetController.handleGetAllAssets
+    invoiceController.handleGetAllInvoices
+  );
+
+  router.get(
+    "/api/get-all-asset-invoices",
+    // verifyToken,
+    // authorizeRoles(1, 2),
+    invoiceController.handleGetAllAssetInvoices
   );
 
   router.post(

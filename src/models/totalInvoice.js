@@ -4,7 +4,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TotalInvoice extends Model {
     static associate(models) {
-      TotalInvoice.belongsTo(models.FieldBooking, { foreignKey: "booking_id" });
+      TotalInvoice.belongsTo(models.FieldBooking, {
+        foreignKey: "booking_id",
+        as: "FieldBooking",
+      });
     }
   }
   TotalInvoice.init(

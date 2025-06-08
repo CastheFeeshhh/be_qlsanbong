@@ -34,7 +34,11 @@ let handleUserLogin = (email, password) => {
             "position_id",
             "first_name",
             "last_name",
+            "gender",
+            "phone",
+            "address",
             "avatar",
+            "created_at",
           ],
           where: { email: email },
           raw: true,
@@ -511,7 +515,7 @@ let updateUserData = (data) => {
       if (!data.user_id) {
         resolve({
           errCode: 2,
-          errMessage: "Missing input data",
+          errMessage: "Thiếu dữ liệu đầu vào",
         });
       }
       let user = await db.User.findOne({ where: { user_id: data.user_id } });
@@ -521,6 +525,8 @@ let updateUserData = (data) => {
             first_name: data.first_name,
             last_name: data.last_name,
             address: data.address,
+            gender: data.gender,
+            phone: data.phone,
           },
           { where: { user_id: data.user_id } }
         );
