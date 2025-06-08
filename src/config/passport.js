@@ -118,9 +118,9 @@ let configPassport = (app) => {
               ? profile.emails[0].value
               : null;
           const first_name =
-            profile.first_name || profile.displayName.split(" ")[0] || ""; // Đã sửa: truy cập profile.first_name
+            profile.first_name || profile.displayName.split(" ")[0] || "";
           const last_name =
-            profile.last_name || // Đã sửa: truy cập profile.last_name
+            profile.last_name ||
             profile.displayName.split(" ").slice(1).join(" ") ||
             "";
           const avatar =

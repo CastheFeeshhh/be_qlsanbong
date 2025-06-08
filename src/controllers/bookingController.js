@@ -66,6 +66,26 @@ let handleAddServiceBookingDetail = async (req, res) => {
   return res.status(200).json(message);
 };
 
+const handleGetBookingHistory = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Thiếu tham số userId!",
+      });
+    }
+    const data = await bookingService.getBookingHistoryByUserId(userId);
+    return res.status(200).json(data);
+  } catch (e) {
+    console.error("Lỗi khi lấy lịch sử đặt sân:", e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server.",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllFields,
   handleGetAllServices,
@@ -74,4 +94,5 @@ module.exports = {
   handleAddDetailBooking,
   handleAddNewServiceBooking,
   handleAddServiceBookingDetail,
+  handleGetBookingHistory,
 };

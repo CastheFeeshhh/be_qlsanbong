@@ -6,13 +6,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       FieldBookingDetail.belongsTo(models.FieldBooking, {
         foreignKey: "booking_id",
+        as: "FieldBooking",
       });
-      FieldBookingDetail.belongsTo(models.Field, { foreignKey: "field_id" });
+      FieldBookingDetail.belongsTo(models.Field, {
+        foreignKey: "field_id",
+        as: "Field",
+      });
       FieldBookingDetail.hasMany(models.ServiceBooking, {
         foreignKey: "booking_detail_id",
+        as: "ServiceBookings",
       });
       FieldBookingDetail.hasMany(models.AssetUsage, {
         foreignKey: "booking_detail_id",
+        as: "AssetUsages",
       });
     }
   }

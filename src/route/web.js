@@ -126,8 +126,8 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-all-users",
-    verifyToken,
-    authorizeRoles(1),
+    // verifyToken,
+    // authorizeRoles(1),
     userController.handleGetAllUsers
   );
 
@@ -190,6 +190,12 @@ let initWebRoutes = (app) => {
     "/api/delete-user",
     verifyToken,
     userController.handleDeleteUser
+  );
+
+  router.get(
+    "/api/get-booking-history",
+    // verifyToken,
+    bookingController.handleGetBookingHistory
   );
 
   router.get("/api/get-all-fields", bookingController.handleGetAllFields);

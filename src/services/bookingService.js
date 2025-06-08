@@ -138,6 +138,69 @@ let addServiceBookingDetail = (data) => {
   });
 };
 
+const getBookingHistoryByUserId = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!userId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu user_id!",
+        });
+        return;
+      }
+
+      let bookings = await db.FieldBooking.findAll({
+        where: { user_id: userId },
+        attributes: ["booking_id", "status", "created_at", "price_estimate"],
+        include: [
+          {
+            model: db.FieldBookingDetail,
+            as: "FieldBookingDetail",
+            attributes: ["booking_detail_id", "date", "start_time", "end_time"],
+            include: [
+              {
+                model: db.Field,
+                as: "Field",
+                attributes: ["field_name", "type"],
+              },
+              {
+                model: db.ServiceBooking,
+                as: "ServiceBookings",
+                attributes: ["total_service_price"],
+                include: [
+                  {
+                    model: db.ServiceBookingDetail,
+                    as: "ServiceBookingDetails",
+                    attributes: ["quantity", "note"],
+                    include: [
+                      {
+                        model: db.Service,
+                        as: "Service",
+                        attributes: ["name", "price"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        order: [["created_at", "DESC"]],
+        raw: false,
+        nest: false,
+      });
+
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        bookings: bookings,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllFields,
   getAllServices,
@@ -146,4 +209,5 @@ module.exports = {
   addDetailBooking,
   addNewServiceBooking,
   addServiceBookingDetail,
+  getBookingHistoryByUserId,
 };
