@@ -170,7 +170,98 @@ const updateAssetUsageAndInventory = async (bookingId, transaction) => {
   );
 };
 
+const createNewAsset = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.name || !data.total_quantity) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu các trường bắt buộc: Tên và Tổng số lượng",
+        });
+      } else {
+        await db.Asset.create({
+          name: data.name,
+          description: data.description,
+          status: data.status,
+          is_trackable: data.is_trackable,
+          total_quantity: data.total_quantity,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Thêm tài sản mới thành công!",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const deleteAsset = (assetId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let asset = await db.Asset.findOne({
+        where: { asset_id: assetId },
+      });
+      if (!asset) {
+        resolve({
+          errCode: 2,
+          errMessage: `Tài sản không tồn tại`,
+        });
+      }
+      await db.Asset.destroy({
+        where: { asset_id: assetId },
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Xóa tài sản thành công!",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateAssetData = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.asset_id) {
+        resolve({
+          errCode: 2,
+          errMessage: "Thiếu tham số bắt buộc!",
+        });
+      }
+      let asset = await db.Asset.findOne({
+        where: { asset_id: data.asset_id },
+        raw: false,
+      });
+      if (asset) {
+        asset.name = data.name;
+        asset.description = data.description;
+        asset.status = data.status;
+        asset.is_trackable = data.is_trackable;
+        asset.total_quantity = data.total_quantity;
+        await asset.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Cập nhật tài sản thành công!",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Không tìm thấy tài sản!",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllAssets,
   updateAssetUsageAndInventory,
+  createNewAsset,
+  updateAssetData,
+  deleteAsset,
 };

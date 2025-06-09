@@ -1,21 +1,8 @@
-import assetService from "../services/assetService";
+import fieldService from "../services/fieldService";
 
-const handleGetAllAssets = async (req, res) => {
+const handleCreateNewField = async (req, res) => {
   try {
-    let data = await assetService.getAllAssets();
-    return res.status(200).json(data);
-  } catch (e) {
-    console.error("Lỗi khi lấy danh sách tài sản:", e);
-    return res.status(200).json({
-      errCode: -1,
-      errMessage: "Lỗi từ server.",
-    });
-  }
-};
-
-const handleCreateNewAsset = async (req, res) => {
-  try {
-    let message = await assetService.createNewAsset(req.body);
+    let message = await fieldService.createNewField(req.body);
     return res.status(200).json(message);
   } catch (e) {
     return res.status(200).json({
@@ -25,16 +12,16 @@ const handleCreateNewAsset = async (req, res) => {
   }
 };
 
-const handleEditAsset = async (req, res) => {
+const handleEditField = async (req, res) => {
   try {
     let data = req.body;
-    if (!data.asset_id) {
+    if (!data.field_id) {
       return res.status(200).json({
         errCode: 1,
         errMessage: "Thiếu tham số bắt buộc!",
       });
     }
-    let message = await assetService.updateAssetData(data);
+    let message = await fieldService.updateField(data);
     return res.status(200).json(message);
   } catch (e) {
     return res.status(200).json({
@@ -44,7 +31,7 @@ const handleEditAsset = async (req, res) => {
   }
 };
 
-const handleDeleteAsset = async (req, res) => {
+const handleDeleteField = async (req, res) => {
   try {
     if (!req.body.id) {
       return res.status(200).json({
@@ -52,7 +39,7 @@ const handleDeleteAsset = async (req, res) => {
         errMessage: "Thiếu tham số bắt buộc!",
       });
     }
-    let message = await assetService.deleteAsset(req.body.id);
+    let message = await fieldService.deleteField(req.body.id);
     return res.status(200).json(message);
   } catch (e) {
     return res.status(200).json({
@@ -63,8 +50,7 @@ const handleDeleteAsset = async (req, res) => {
 };
 
 module.exports = {
-  handleGetAllAssets,
-  handleCreateNewAsset,
-  handleEditAsset,
-  handleDeleteAsset,
+  handleCreateNewField,
+  handleEditField,
+  handleDeleteField,
 };

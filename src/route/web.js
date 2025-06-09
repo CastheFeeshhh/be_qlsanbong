@@ -4,6 +4,9 @@ import userController from "../controllers/userController";
 import bookingController from "../controllers/bookingController";
 import assetController from "../controllers/assetController";
 import invoiceController from "../controllers/invoiceController";
+import supplierController from "../controllers/supplierController";
+import fieldController from "../controllers/fieldController";
+import serviceController from "../controllers/serviceController";
 import {
   authenticateToken,
   authorizeRoles,
@@ -156,20 +159,20 @@ let initWebRoutes = (app) => {
     "/api/get-all-suppliers",
     verifyToken,
     authorizeRoles(1, 2),
-    userController.handleGetAllSuppliers
+    supplierController.handleGetAllSuppliers
   );
 
   router.get(
     "/api/get-all-assets",
-    verifyToken,
-    authorizeRoles(1, 2),
+    // verifyToken,
+    // authorizeRoles(1, 2),
     assetController.handleGetAllAssets
   );
 
   router.get(
     "/api/get-all-invoices",
-    verifyToken,
-    authorizeRoles(1, 2),
+    // verifyToken,
+    // authorizeRoles(1, 2),
     invoiceController.handleGetAllInvoices
   );
 
@@ -178,6 +181,11 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1, 2),
     invoiceController.handleGetAllAssetInvoices
+  );
+
+  router.get(
+    "/api/get-invoice-details",
+    invoiceController.handleGetInvoiceDetails
   );
 
   router.post(
@@ -235,13 +243,83 @@ let initWebRoutes = (app) => {
 
   router.get("/api/vnpay/return", vnpayController.handleVnpayReturn);
 
-  // router.get("/api/profile", verifyToken, (req, res) => {
-  //   res.json({ message: "You are authenticated!", user: req.user });
-  // });
+  router.post(
+    "/api/create-new-supplier",
+    verifyToken,
+    authorizeRoles(1, 2),
+    supplierController.handleCreateNewSupplier
+  );
 
-  // router.get("/api/admin-only", verifyToken, authorizeRoles(1), (req, res) => {
-  //   res.json({ message: "Welcome admin!" });
-  // });
+  router.put(
+    "/api/edit-supplier",
+    verifyToken,
+    authorizeRoles(1, 2),
+    supplierController.handleEditSupplier
+  );
+  router.delete(
+    "/api/delete-supplier",
+    verifyToken,
+    authorizeRoles(1, 2),
+    supplierController.handleDeleteSupplier
+  );
+
+  router.post(
+    "/api/create-new-field",
+    verifyToken,
+    authorizeRoles(1, 2),
+    fieldController.handleCreateNewField
+  );
+  router.put(
+    "/api/edit-field",
+    verifyToken,
+    authorizeRoles(1, 2),
+    fieldController.handleEditField
+  );
+  router.delete(
+    "/api/delete-field",
+    verifyToken,
+    authorizeRoles(1, 2),
+    fieldController.handleDeleteField
+  );
+
+  router.post(
+    "/api/create-new-asset",
+    verifyToken,
+    authorizeRoles(1, 2),
+    assetController.handleCreateNewAsset
+  );
+  router.put(
+    "/api/edit-asset",
+    verifyToken,
+    authorizeRoles(1, 2),
+    assetController.handleEditAsset
+  );
+  router.delete(
+    "/api/delete-asset",
+    verifyToken,
+    authorizeRoles(1, 2),
+    assetController.handleDeleteAsset
+  );
+
+  router.post(
+    "/api/create-new-service",
+    verifyToken,
+    authorizeRoles(1, 2),
+    serviceController.handleCreateNewService
+  );
+
+  router.put(
+    "/api/edit-service",
+    verifyToken,
+    authorizeRoles(1, 2),
+    serviceController.handleEditService
+  );
+  router.delete(
+    "/api/delete-service",
+    verifyToken,
+    authorizeRoles(1, 2),
+    serviceController.handleDeleteService
+  );
 
   return app.use("/", router);
 };

@@ -106,7 +106,70 @@ const getAllAssetInvoices = () => {
   });
 };
 
+let getInvoiceDetails = (bookingId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!bookingId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu booking_id!",
+        });
+        return;
+      }
+
+      let bookingDetails = await db.FieldBooking.findOne({
+        where: { booking_id: bookingId },
+        attributes: ["booking_id", "status", "created_at", "price_estimate"],
+        include: [
+          {
+            model: db.FieldBookingDetail,
+            as: "FieldBookingDetail",
+            attributes: ["booking_detail_id", "date", "start_time", "end_time"],
+            include: [
+              {
+                model: db.Field,
+                as: "Field",
+                attributes: ["field_name", "type"],
+              },
+              {
+                model: db.ServiceBooking,
+                as: "ServiceBookings",
+                attributes: ["total_service_price"],
+                include: [
+                  {
+                    model: db.ServiceBookingDetail,
+                    as: "ServiceBookingDetails",
+                    attributes: ["quantity", "note"],
+                    include: [
+                      {
+                        model: db.Service,
+                        as: "Service",
+                        attributes: ["name", "price"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        raw: false,
+        nest: false,
+      });
+
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        details: bookingDetails,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllInvoices,
   getAllAssetInvoices,
+  getInvoiceDetails,
 };

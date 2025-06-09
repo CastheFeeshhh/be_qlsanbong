@@ -26,7 +26,27 @@ const handleGetAllAssetInvoices = async (req, res) => {
   }
 };
 
+let handleGetInvoiceDetails = async (req, res) => {
+  try {
+    if (!req.query.id) {
+      return res.status(400).json({
+        errCode: 1,
+        errMessage: "Thiếu tham số bắt buộc: id",
+      });
+    }
+    let data = await invoiceService.getInvoiceDetails(req.query.id);
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server...",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllInvoices,
   handleGetAllAssetInvoices,
+  handleGetInvoiceDetails,
 };
