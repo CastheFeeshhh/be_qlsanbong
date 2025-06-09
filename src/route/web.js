@@ -7,6 +7,7 @@ import invoiceController from "../controllers/invoiceController";
 import supplierController from "../controllers/supplierController";
 import fieldController from "../controllers/fieldController";
 import serviceController from "../controllers/serviceController";
+import statisticsController from "../controllers/statisticsController";
 import {
   authenticateToken,
   authorizeRoles,
@@ -319,6 +320,13 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1, 2),
     serviceController.handleDeleteService
+  );
+
+  router.get(
+    "/api/statistics/revenue",
+    verifyToken,
+    authorizeRoles(1, 2),
+    statisticsController.handleGetRevenueStats
   );
 
   return app.use("/", router);
