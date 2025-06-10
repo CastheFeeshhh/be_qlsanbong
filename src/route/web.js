@@ -130,8 +130,8 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-all-users",
-    // verifyToken,
-    // authorizeRoles(1),
+    verifyToken,
+    authorizeRoles(1),
     userController.handleGetAllUsers
   );
 
@@ -165,15 +165,15 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-all-assets",
-    // verifyToken,
-    // authorizeRoles(1, 2),
+    verifyToken,
+    authorizeRoles(1, 2),
     assetController.handleGetAllAssets
   );
 
   router.get(
     "/api/get-all-invoices",
-    // verifyToken,
-    // authorizeRoles(1, 2),
+    verifyToken,
+    authorizeRoles(1, 2),
     invoiceController.handleGetAllInvoices
   );
 
