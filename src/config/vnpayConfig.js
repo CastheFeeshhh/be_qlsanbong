@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-var vnpayConfig = {
+let vnpayConfig = {
   tmnCode: process.env.VNPAY_TMNCODE,
   hashSecret: process.env.VNPAY_HASHSECRET,
   vnpUrl: process.env.VNPAY_URL,

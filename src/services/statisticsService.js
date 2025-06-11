@@ -12,11 +12,19 @@ const getRevenueStatistics = (startDate, endDate) => {
         return;
       }
 
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+
+      const dateRange = {
+        [Sequelize.Op.between]: [start, end],
+      };
+
       const revenueByDay = await db.TotalInvoice.findAll({
         where: {
-          paid_at: {
-            [Sequelize.Op.between]: [new Date(startDate), new Date(endDate)],
-          },
+          paid_at: dateRange,
         },
         attributes: [
           [Sequelize.fn("date", Sequelize.col("paid_at")), "date"],
@@ -29,9 +37,7 @@ const getRevenueStatistics = (startDate, endDate) => {
 
       const totalStats = await db.TotalInvoice.findOne({
         where: {
-          paid_at: {
-            [Sequelize.Op.between]: [new Date(startDate), new Date(endDate)],
-          },
+          paid_at: dateRange,
         },
         attributes: [
           [Sequelize.fn("sum", Sequelize.col("total_price")), "totalRevenue"],
