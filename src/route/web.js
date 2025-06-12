@@ -329,6 +329,13 @@ let initWebRoutes = (app) => {
     statisticsController.handleGetRevenueStats
   );
 
+  router.get(
+    "/api/statistics/bookings",
+    verifyToken,
+    authorizeRoles(1, 2),
+    statisticsController.handleGetBookingsStats
+  );
+
   return app.use("/", router);
 };
 
