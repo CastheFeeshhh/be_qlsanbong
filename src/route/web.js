@@ -216,6 +216,10 @@ let initWebRoutes = (app) => {
   router.get("/api/get-all-fields", bookingController.handleGetAllFields);
   router.get("/api/get-all-services", bookingController.handleGetAllServices);
   router.get("/api/get-all-schedules", bookingController.handleGetAllSchedules);
+  router.get(
+    "/api/booking-schedule",
+    bookingController.handleGetBookingSchedule
+  );
 
   router.post("/api/add-new-booking", bookingController.handleAddNewBooking);
   router.post(

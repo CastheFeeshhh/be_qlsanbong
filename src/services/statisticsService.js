@@ -1,5 +1,5 @@
 import db from "../models/index";
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 
 const getRevenueStatistics = (startDate, endDate) => {
   return new Promise(async (resolve, reject) => {

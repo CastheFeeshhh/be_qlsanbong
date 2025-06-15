@@ -95,7 +95,6 @@ let registerUser = (data) => {
         data.first_name === null ||
         data.last_name === null ||
         data.address === null ||
-        data.gender === null ||
         data.phone === null
       ) {
         resolve({

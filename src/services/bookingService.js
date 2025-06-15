@@ -1,5 +1,6 @@
 import { where } from "sequelize";
 import db from "../models/index";
+import moment from "moment";
 
 let getAllFields = () => {
   return new Promise(async (resolve, reject) => {
@@ -201,6 +202,83 @@ const getBookingHistoryByUserId = (userId) => {
   });
 };
 
+const getBookingScheduleByDate = (date) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!date) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu tham số ngày!",
+        });
+        return;
+      }
+
+      const formattedDate = moment(date, "MM-DD-YYYY").format("YYYY-MM-DD");
+
+      const fields = await db.Field.findAll({
+        attributes: [
+          ["field_id", "id"],
+          ["field_name", "title"],
+        ],
+        raw: true,
+      });
+
+      const bookings = await db.FieldBookingDetail.findAll({
+        where: {
+          date: formattedDate,
+        },
+        include: [
+          {
+            model: db.FieldBooking,
+            as: "FieldBooking",
+            where: { status: "Đã xác nhận" },
+            attributes: [],
+          },
+        ],
+        attributes: [
+          "booking_detail_id",
+          "field_id",
+          "start_time",
+          "end_time",
+          "team_name",
+          "captain_name",
+        ],
+        raw: false,
+        nest: true,
+      });
+
+      const items = bookings.map((booking) => {
+        const startTime = moment(
+          `${formattedDate} ${booking.start_time}`
+        ).valueOf();
+        const endTime = moment(
+          `${formattedDate} ${booking.end_time}`
+        ).valueOf();
+
+        return {
+          id: booking.booking_detail_id,
+          group: booking.field_id,
+          title: booking.team_name,
+          captain_name: booking.captain_name,
+          start_time: startTime,
+          end_time: endTime,
+          canMove: false,
+          canResize: false,
+        };
+      });
+
+      resolve({
+        errCode: 0,
+        data: {
+          groups: fields,
+          items: items,
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   getAllFields,
   getAllServices,
@@ -210,4 +288,5 @@ module.exports = {
   addNewServiceBooking,
   addServiceBookingDetail,
   getBookingHistoryByUserId,
+  getBookingScheduleByDate,
 };
