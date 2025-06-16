@@ -106,6 +106,26 @@ const handleGetBookingSchedule = async (req, res) => {
   }
 };
 
+const handleGetOperationalSchedule = async (req, res) => {
+  try {
+    const date = req.query.date;
+    if (!date) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Thiếu tham số ngày!",
+      });
+    }
+    const data = await bookingService.getOperationalSchedule(date);
+    return res.status(200).json(data);
+  } catch (e) {
+    console.error("Lỗi khi lấy lịch vận hành sân:", e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server.",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllFields,
   handleGetAllServices,
@@ -116,4 +136,5 @@ module.exports = {
   handleAddServiceBookingDetail,
   handleGetBookingHistory,
   handleGetBookingSchedule,
+  handleGetOperationalSchedule,
 };

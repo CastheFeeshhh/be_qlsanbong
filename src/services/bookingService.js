@@ -279,6 +279,113 @@ const getBookingScheduleByDate = (date) => {
     }
   });
 };
+
+const getOperationalSchedule = (date) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!date) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu tham số ngày!",
+        });
+        return;
+      }
+
+      const formattedDate = moment(date, "MM-DD-YYYY").format("YYYY-MM-DD");
+
+      const bookings = await db.FieldBookingDetail.findAll({
+        where: { date: formattedDate },
+        include: [
+          {
+            model: db.FieldBooking,
+            as: "FieldBooking",
+            where: { status: "Đã xác nhận" },
+            attributes: [],
+          },
+          {
+            model: db.Field,
+            as: "Field",
+            attributes: ["field_name"],
+          },
+          {
+            model: db.ServiceBooking,
+            as: "ServiceBookings",
+            attributes: ["total_service_price"],
+            include: [
+              {
+                model: db.ServiceBookingDetail,
+                as: "ServiceBookingDetails",
+                attributes: ["quantity"],
+                include: [
+                  {
+                    model: db.Service,
+                    as: "Service",
+                    attributes: ["name"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        attributes: ["start_time", "end_time", "team_name", "captain_name"],
+        raw: false,
+        nest: true,
+      });
+
+      const timeSlots = {};
+
+      bookings.forEach((booking) => {
+        const startTime = booking.start_time.substring(0, 5);
+        const endTime = booking.end_time.substring(0, 5);
+
+        if (!timeSlots[startTime]) {
+          timeSlots[startTime] = { starting_matches: [], ending_matches: [] };
+        }
+        if (!timeSlots[endTime]) {
+          timeSlots[endTime] = { starting_matches: [], ending_matches: [] };
+        }
+
+        let services = [];
+        if (booking.ServiceBookings && booking.ServiceBookings.length > 0) {
+          services = booking.ServiceBookings.flatMap((sb) =>
+            sb.ServiceBookingDetails.map((sbd) => ({
+              name: sbd.Service.name,
+              quantity: sbd.quantity,
+            }))
+          );
+        }
+
+        const matchInfo = {
+          field_name: booking.Field.field_name,
+          team_name: booking.team_name,
+          captain_name: booking.captain_name,
+          start_time: startTime,
+          end_time: endTime,
+          services: services,
+        };
+
+        timeSlots[startTime].starting_matches.push(matchInfo);
+        timeSlots[endTime].ending_matches.push(matchInfo);
+      });
+
+      const sortedSchedule = Object.keys(timeSlots)
+        .sort()
+        .map((time) => ({
+          time_slot: time,
+          starting_matches: timeSlots[time].starting_matches,
+          ending_matches: timeSlots[time].ending_matches,
+        }));
+
+      resolve({
+        errCode: 0,
+        data: sortedSchedule,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllFields,
   getAllServices,
@@ -289,4 +396,5 @@ module.exports = {
   addServiceBookingDetail,
   getBookingHistoryByUserId,
   getBookingScheduleByDate,
+  getOperationalSchedule,
 };

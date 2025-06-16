@@ -2,11 +2,13 @@ import express from "express";
 import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import bookingController from "../controllers/bookingController";
+import newsController from "../controllers/newsController";
 import assetController from "../controllers/assetController";
 import invoiceController from "../controllers/invoiceController";
 import supplierController from "../controllers/supplierController";
 import fieldController from "../controllers/fieldController";
 import serviceController from "../controllers/serviceController";
+import assetInvoiceController from "../controllers/assetInvoiceController";
 import statisticsController from "../controllers/statisticsController";
 import {
   authenticateToken,
@@ -189,6 +191,13 @@ let initWebRoutes = (app) => {
     invoiceController.handleGetInvoiceDetails
   );
 
+  router.get(
+    "/api/operational-schedule",
+    verifyToken,
+    authorizeRoles(1, 2),
+    bookingController.handleGetOperationalSchedule
+  );
+
   router.post(
     "/api/create-new-user",
     verifyToken,
@@ -220,6 +229,8 @@ let initWebRoutes = (app) => {
     "/api/booking-schedule",
     bookingController.handleGetBookingSchedule
   );
+  router.get("/api/get-all-news", newsController.handleGetAllNews);
+  router.get("/api/get-news-by-id", newsController.handleGetNewsById);
 
   router.post("/api/add-new-booking", bookingController.handleAddNewBooking);
   router.post(
@@ -324,6 +335,20 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1, 2),
     serviceController.handleDeleteService
+  );
+
+  router.post(
+    "/api/create-asset-invoice",
+    verifyToken,
+    authorizeRoles(1, 2),
+    assetInvoiceController.handleCreateAssetInvoice
+  );
+
+  router.get(
+    "/api/get-asset-invoice-by-id",
+    // verifyToken,
+    // authorizeRoles(1, 2),
+    assetInvoiceController.handleGetAssetInvoiceById
   );
 
   router.get(
