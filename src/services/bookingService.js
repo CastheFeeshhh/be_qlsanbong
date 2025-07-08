@@ -386,6 +386,51 @@ const getOperationalSchedule = (date) => {
   });
 };
 
+const cancelBookingById = (bookingId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!bookingId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu tham số booking_id!",
+        });
+        return;
+      }
+
+      let booking = await db.FieldBooking.findOne({
+        where: { booking_id: bookingId },
+        raw: false,
+      });
+
+      if (!booking) {
+        resolve({
+          errCode: 2,
+          errMessage: "Không tìm thấy phiếu đặt!",
+        });
+        return;
+      }
+
+      if (booking.status === "Đã hủy") {
+        resolve({
+          errCode: 3,
+          errMessage: "Phiếu đặt này đã được hủy từ trước.",
+        });
+        return;
+      }
+
+      booking.status = "Đã hủy";
+      await booking.save();
+
+      resolve({
+        errCode: 0,
+        errMessage: "Hủy phiếu đặt thành công.",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllFields,
   getAllServices,
@@ -397,4 +442,5 @@ module.exports = {
   getBookingHistoryByUserId,
   getBookingScheduleByDate,
   getOperationalSchedule,
+  cancelBookingById,
 };

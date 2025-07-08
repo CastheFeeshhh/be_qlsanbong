@@ -180,13 +180,21 @@ let handleGetAllStaffs = async (req, res) => {
 };
 
 let handleGetAllCustomers = async (req, res) => {
-  let users = await userService.getAllCustomers();
+  try {
+    const { search, sort } = req.query;
+    let users = await userService.getAllCustomers({ search, sort });
 
-  return res.status(200).json({
-    errCode: 0,
-    errMessage: "OK",
-    users,
-  });
+    return res.status(200).json({
+      errCode: 0,
+      errMessage: "OK",
+      users,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server.",
+    });
+  }
 };
 
 let handleCreateNewUser = async (req, res) => {

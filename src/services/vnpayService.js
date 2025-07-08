@@ -1,9 +1,7 @@
-// src/services/vnpayService.js
-
 const vnpayConfig = require("../config/vnpayConfig");
 const moment = require("moment");
 const crypto = require("crypto");
-const qs = require("qs"); // Import thư viện qs
+const qs = require("qs");
 
 function sortObject(obj) {
   let sorted = {};
@@ -37,7 +35,7 @@ const vnpayService = {
     vnp_Params["vnp_Version"] = "2.1.0";
     vnp_Params["vnp_Command"] = "pay";
     vnp_Params["vnp_TmnCode"] = tmnCode;
-    vnp_Params["vnp_Amount"] = amount * 100; // Số tiền cần nhân 100
+    vnp_Params["vnp_Amount"] = amount * 100;
     vnp_Params["vnp_CurrCode"] = currCode;
     vnp_Params["vnp_TxnRef"] = txnRef;
     vnp_Params["vnp_OrderInfo"] = orderInfo;

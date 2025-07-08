@@ -260,6 +260,13 @@ let initWebRoutes = (app) => {
   router.get("/api/vnpay/return", vnpayController.handleVnpayReturn);
 
   router.post(
+    "/api/admin/cancel-booking",
+    verifyToken,
+    authorizeRoles(1, 2),
+    bookingController.handleCancelBooking
+  );
+
+  router.post(
     "/api/create-new-supplier",
     verifyToken,
     authorizeRoles(1, 2),
@@ -346,8 +353,8 @@ let initWebRoutes = (app) => {
 
   router.get(
     "/api/get-asset-invoice-by-id",
-    // verifyToken,
-    // authorizeRoles(1, 2),
+    verifyToken,
+    authorizeRoles(1, 2),
     assetInvoiceController.handleGetAssetInvoiceById
   );
 
@@ -356,6 +363,13 @@ let initWebRoutes = (app) => {
     verifyToken,
     authorizeRoles(1, 2),
     statisticsController.handleGetRevenueStats
+  );
+
+  router.get(
+    "/api/invoices-by-date-range",
+    verifyToken,
+    authorizeRoles(1, 2),
+    statisticsController.handleGetInvoicesByDateRange
   );
 
   router.get(

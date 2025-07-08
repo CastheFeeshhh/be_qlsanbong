@@ -126,6 +126,26 @@ const handleGetOperationalSchedule = async (req, res) => {
   }
 };
 
+const handleCancelBooking = async (req, res) => {
+  try {
+    const bookingId = req.body.booking_id;
+    if (!bookingId) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Thiếu tham số booking_id!",
+      });
+    }
+    const result = await bookingService.cancelBookingById(bookingId);
+    return res.status(200).json(result);
+  } catch (e) {
+    console.error("Lỗi khi hủy phiếu đặt:", e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Lỗi từ server.",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllFields,
   handleGetAllServices,
@@ -137,4 +157,5 @@ module.exports = {
   handleGetBookingHistory,
   handleGetBookingSchedule,
   handleGetOperationalSchedule,
+  handleCancelBooking,
 };

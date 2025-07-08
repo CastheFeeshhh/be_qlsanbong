@@ -1,5 +1,6 @@
 import db from "../models/index";
 import { Sequelize, Op } from "sequelize";
+import moment from "moment";
 
 const getRevenueStatistics = (startDate, endDate) => {
   return new Promise(async (resolve, reject) => {
@@ -54,6 +55,43 @@ const getRevenueStatistics = (startDate, endDate) => {
           totalInvoices: totalStats.totalInvoices || 0,
           revenueByDay: revenueByDay,
         },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getInvoicesByDateRange = (startDate, endDate) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!startDate || !endDate) {
+        resolve({
+          errCode: 1,
+          errMessage: "Thiếu ngày bắt đầu hoặc ngày kết thúc!",
+        });
+        return;
+      }
+
+      const start = moment(startDate, "MM/DD/YYYY").startOf("day").toDate();
+      const end = moment(endDate, "MM/DD/YYYY").endOf("day").toDate();
+
+      const dateRange = {
+        [Op.between]: [start, end],
+      };
+
+      const invoices = await db.TotalInvoice.findAll({
+        where: {
+          paid_at: dateRange,
+        },
+        order: [["paid_at", "DESC"]],
+        raw: true,
+      });
+
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        data: invoices,
       });
     } catch (e) {
       reject(e);
@@ -141,4 +179,5 @@ const getBookingsStatistics = (startDate, endDate) => {
 module.exports = {
   getRevenueStatistics,
   getBookingsStatistics,
+  getInvoicesByDateRange,
 };

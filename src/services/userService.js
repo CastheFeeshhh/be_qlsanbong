@@ -2,6 +2,7 @@ import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+const { Op } = require("sequelize");
 
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
@@ -407,16 +408,49 @@ let getAllStaffs = () => {
   });
 };
 
-let getAllCustomers = () => {
+let getAllCustomers = (options) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let users = "";
-      users = await db.User.findAll({
-        where: { role_id: 3 },
+      const { search, sort } = options;
+
+      let whereClause = { role_id: 3 };
+      if (search) {
+        whereClause[Op.or] = [
+          { first_name: { [Op.like]: `%${search}%` } },
+          { last_name: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } },
+          { phone: { [Op.like]: `%${search}%` } },
+        ];
+      }
+
+      let orderClause = [];
+      if (sort) {
+        switch (sort) {
+          case "created_at_asc":
+            orderClause.push(["created_at", "ASC"]);
+            break;
+          case "last_name_asc":
+            orderClause.push(["last_name", "ASC"]);
+            break;
+          case "last_name_desc":
+            orderClause.push(["last_name", "DESC"]);
+            break;
+          default:
+            orderClause.push(["created_at", "DESC"]);
+        }
+      } else {
+        orderClause.push(["created_at", "DESC"]);
+      }
+
+      let users = await db.User.findAll({
+        where: whereClause,
+        order: orderClause,
         attributes: {
           exclude: ["password"],
         },
+        raw: true,
       });
+
       resolve(users);
     } catch (e) {
       reject(e);
